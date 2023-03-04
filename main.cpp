@@ -4,12 +4,18 @@
 #include <pybind11/stl.h>           // mandatory for myPyObject.cast<std::vector<T>>()
 #include <pybind11/functional.h>    // mandatory for py::cast( std::function )
 
+// test dlib
+// #include <dlib/optimization.h>
+// #include <dlib/global_optimization.h>
 
 namespace py = pybind11;
 
 
 int main()
-{
+{    
+
+
+    return 0;
     py::scoped_interpreter guard{};
 
     py::module np = py::module::import("numpy");
@@ -21,9 +27,11 @@ int main()
     py::function func_exp_F = customfunc.attr("func_exp_F");
 
 
-    py::array_t<double> x = np.attr("arange")(-10, 10, 0.1);
-    py::array_t<double> noise = py::float_(500000.0) * np.attr("random").attr("normal")( 0, 1, x.attr("size"));
-    py::array_t<double> y = func_exp_F(x, 0.1, 2) + noise;
+    py::array_t<double> x = np.attr("arange")(-10, 10, 0.1);    
+    py::array_t<double> y = func_exp_F(x, 0.1, 2);
+    py::array_t<double> noise = py::float_(5*1e5) * np.attr("random").attr("normal")( 0, 1, x.attr("size"));
+    y += noise;
+    
         
     plt.attr("plot")(x, y);
 
