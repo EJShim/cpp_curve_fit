@@ -2,7 +2,6 @@ project(pybind_demo)
 cmake_minimum_required(VERSION 3.13)
 set(CMAKE_CXX_STANDARD 14)	
 
-
 set(CMAKE_OSX_ARCHITECTURES "x86_64")
 
 include(FetchContent)
@@ -14,5 +13,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(pybind11)
 
+
+
 add_executable(demo main.cpp)
 target_link_libraries(demo PRIVATE pybind11::embed)
+
+add_custom_command(
+        TARGET demo POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+                ${CMAKE_SOURCE_DIR}/module.py
+                ${CMAKE_CURRENT_BINARY_DIR}/module.py)
