@@ -54,6 +54,7 @@ target_link_libraries(
 target_link_libraries(
 	ceres_demo
 	PRIVATE
+	pybind11::embed
 	Ceres::ceres
 )
 
