@@ -24,51 +24,25 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(pybind11)
 
-include(FetchContent)
+#Eigen
 FetchContent_Declare(
-  Eigen
-  GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-  GIT_TAG 3.4.0
-  GIT_SHALLOW TRUE
-  GIT_PROGRESS TRUE)
-set(EIGEN_BUILD_DOC OFF)
-# note: To disable eigen tests,
-# you should put this code in a add_subdirectory to avoid to change
-# BUILD_TESTING for your own project too since variables are directory
-# scoped
-set(BUILD_TESTING OFF)
-set(EIGEN_BUILD_PKGCONFIG OFF)
-set( OFF)
-FetchContent_MakeAvailable(Eigen)
-
-# GLOG
-FetchContent_Declare(
-	glog
-	GIT_REPOSITORY https://github.com/google/glog
-	GIT_TAG        v0.6.0   
+	eigen
+	GIT_REPOSITORY https://gitlab.com/libeigen/eigen
+	GIT_TAG        9623c0c4b9f40e74ba6ba551f86831616bdd488c
 )
-set(WITH_UNWIND OFF)
-set(WITH_GTEST OFF)
-set(WITH_GFLAGS OFF)
-FetchContent_MakeAvailable(glog)
-
-# # GFLAGS
-# FetchContent_Declare(
-# 	gflags
-# 	GIT_REPOSITORY https://github.com/gflags/gflags
-# 	GIT_TAG        v2.2.2
-# )
-# FetchContent_MakeAvailable(gflags)
-
+FetchContent_MakeAvailable(eigen)
 
 # Ceres
 FetchContent_Declare(
-	Ceres
-	GIT_REPOSITORY 	https://ceres-solver.googlesource.com/ceres-solver
+	ceres
+	GIT_REPOSITORY	https://github.com/ceres-solver/ceres-solver
 	GIT_TAG			2.1.0
-	GIT_SHALLOW		TRUE
 )
-FetchContent_MakeAvailable(Ceres)
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+set(PROVIDE_UNINSTALL_TARGET OFF)
+set(MINIGLOG ON)
+set(CUDA OFF)
+FetchContent_MakeAvailable(ceres)
 
 
 target_link_libraries(
@@ -80,7 +54,6 @@ target_link_libraries(
 target_link_libraries(
 	ceres_demo
 	PRIVATE
-	Eigen3::Eigen
 	Ceres::ceres
 )
 
@@ -91,3 +64,15 @@ add_custom_command(
                 ${CMAKE_SOURCE_DIR}/module.py
                 ${CMAKE_CURRENT_BINARY_DIR}/module.py)
 
+
+
+
+
+message("#################################")
+message(${ceres_BINARY_DIR}/bin/ceres.dll)
+
+add_custom_command(
+	TARGET ceres_demo POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy
+			${ceres_BINARY_DIR}/bin/ceres.dll
+			${CMAKE_CURRENT_BINARY_DIR}/ceres.dll)
